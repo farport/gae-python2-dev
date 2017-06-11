@@ -9,14 +9,13 @@
 # ===========================================================
 
 PROJ_DIR           := $(shell pwd)
-SRC_DIR            := $(PROJ_DIR)/src
 CONFIG_DIR         := $(PROJ_DIR)/config
 RES_DIR            := $(PROJ_DIR)/res
 GCLOUD_SDK         := google-cloud-sdk-158.0.0-linux-x86_64.tar.gz
 GCLOUD_URL         := https://dl.google.com/dl/cloudsdk/channels/rapid/downloads
 GCLOUD_OUT         := google-cloud-sdk.tar.gz
 DOCKER_BUILD_CHECK := $(CONFIG_DIR)/docker.built
-DOCKER_IMAGE       := gae-python2-dev
+DOCKER_IMAGE       := farport/gae-python2-dev
 DOCKER_IMAGE_NAME  := gae-devserver
 DOCKER_IMAGE_ID    = $(shell docker ps -aqf"name=$(DOCKER_IMAGE_NAME)")
 
@@ -76,4 +75,4 @@ endif
 # ------------------
 # DEFINE PHONY TARGET: Basically all targets
 .PHONY : \
-	man init setup run refresh clean
+	man init setup run clean
