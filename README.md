@@ -1,6 +1,6 @@
 ### Google AppEngine Python2 Dev Server
 
-Image name: farport/gae-python2-dev
+Image name: gae-python2-dev
 
 #### Usage
 

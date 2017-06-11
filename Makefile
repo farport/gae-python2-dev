@@ -10,12 +10,9 @@
 
 PROJ_DIR           := $(shell pwd)
 CONFIG_DIR         := $(PROJ_DIR)/config
-RES_DIR            := $(PROJ_DIR)/res
-GCLOUD_SDK         := google-cloud-sdk-158.0.0-linux-x86_64.tar.gz
-GCLOUD_URL         := https://dl.google.com/dl/cloudsdk/channels/rapid/downloads
-GCLOUD_OUT         := google-cloud-sdk.tar.gz
+SSH_DIR         := $(PROJ_DIR)/ssh
 DOCKER_BUILD_CHECK := $(CONFIG_DIR)/docker.built
-DOCKER_IMAGE       := farport/gae-python2-dev
+DOCKER_IMAGE       := gae-python2-dev
 DOCKER_IMAGE_NAME  := gae-devserver
 DOCKER_IMAGE_ID    = $(shell docker ps -aqf"name=$(DOCKER_IMAGE_NAME)")
 
@@ -39,26 +36,24 @@ endif
 
 # ------------------
 # MAIN TARGETS
-$(RES_DIR) :
-	mkdir $@
-
-$(CONFIG_DIR) :
-	mkdir $@
-
-$(RES_DIR)/$(GCLOUD_OUT) : $(RES_DIR)
-	curl $(GCLOUD_URL)/$(GCLOUD_SDK) --output $@
-
-$(DOCKER_BUILD_CHECK) : $(RES_DIR)/$(GCLOUD_OUT) $(CONFIG_DIR)
+$(DOCKER_BUILD_CHECK) : 
 	docker build -f Dockerfile -t $(DOCKER_IMAGE) .
 	touch $@
 
 setup : init $(DOCKER_BUILD_CHECK)
 	@echo "Docker image $(DOCKER_IMAGE) built"
 
-run : setup
+$(SSH_DIR) :
+	mkdir $@
+	chmod 700 $@
+
+$(CONFIG_DIR) :
+	mkdir $@
+
+run : setup $(CONFIG_DIR) $(SSH_DIR)
 ifeq ($(DOCKER_IMAGE_ID),)
 	@echo "### Running docker image"
-	@docker run -p8000:8000 -p8080:8080 -v $(CONFIG_DIR):/.config -i -t --name $(DOCKER_IMAGE_NAME) $(DOCKER_IMAGE) 
+	@docker run -p8000:8000 -p8080:8080 -v $(CONFIG_DIR):/root/.config -v $(SSH_DIR):/root/.ssh --name $(DOCKER_IMAGE_NAME) -it $(DOCKER_IMAGE)
 else
 	@echo "### Staring docker image"
 	@docker start -i $(DOCKER_IMAGE_ID)
