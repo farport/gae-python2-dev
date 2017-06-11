@@ -12,7 +12,7 @@ PROJ_DIR           := $(shell pwd)
 CONFIG_DIR         := $(PROJ_DIR)/config
 SSH_DIR         := $(PROJ_DIR)/ssh
 DOCKER_BUILD_CHECK := $(CONFIG_DIR)/docker.built
-DOCKER_IMAGE       := gae-python2-dev
+DOCKER_IMAGE       := farport/gae-python2-dev
 DOCKER_IMAGE_NAME  := gae-devserver
 DOCKER_IMAGE_ID    = $(shell docker ps -aqf"name=$(DOCKER_IMAGE_NAME)")
 
